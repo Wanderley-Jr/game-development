@@ -13,6 +13,8 @@ struct {
 	int y;
 	int width;
 	int height;
+	int speedX;
+	int speedY;
 } rect;
 
 bool initializeWindow() {
@@ -51,8 +53,29 @@ void handleKeyPress(SDL_Keycode key) {
 			return;
 	}
 
-	rect.x += directions[0] * 50;
-	rect.y += directions[1] * 50;
+	rect.speedX += directions[0] * 3;
+	rect.speedY += directions[1] * 3;
+}
+
+void update() {
+	rect.x += rect.speedX;
+	rect.y += rect.speedY;
+
+	if (rect.x < 0) {
+		rect.x = 0;
+		rect.speedX *= -0.95;
+	} else if (rect.x + rect.width > SCREEN_WIDTH) {
+		rect.x = SCREEN_WIDTH - rect.width;
+		rect.speedX *= -0.95;
+	}
+
+	if (rect.y < 0) {
+		rect.y = 0;
+		rect.speedY *= -0.95;
+	} else if (rect.y + rect.height > SCREEN_HEIGHT) {
+		rect.y = SCREEN_HEIGHT - rect.height;
+		rect.speedY *= -0.95;
+	}
 }
 
 void render() {
@@ -76,20 +99,21 @@ int main() {
 	rect.width = rect.height = 24;
 	rect.x = (SCREEN_WIDTH - rect.width)/2;
 	rect.y = (SCREEN_HEIGHT - rect.height)/2;
+	rect.speedX = rect.speedY = 0;
 
 	SDL_Event e;
-	bool quit = false;
-	while (!quit){
-		while (SDL_PollEvent(&e)){
-			if (e.type == SDL_QUIT){
-				quit = true;
-				break;
-			}
-			else if (e.type == SDL_KEYDOWN) {
+	while (e.type != SDL_QUIT) {
+		// Handle events
+		while (SDL_PollEvent(&e)) {
+			if (e.type == SDL_QUIT) break;
+			
+			if (e.type == SDL_KEYDOWN && !e.key.repeat) {
 				handleKeyPress(e.key.keysym.sym);
 			}
-			
-			render();
 		}
+
+		update();
+		render();
+		SDL_Delay(1000/60);
 	}
 }
