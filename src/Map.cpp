@@ -18,7 +18,7 @@ Tile getTile(char ch) {
 Map::Map() {
 	width = 11;
 	height = 7;
-	char mapStr[] =
+	const char mapStr[] =
 	    "..........."
 	    "..........."
 	    "....www...."

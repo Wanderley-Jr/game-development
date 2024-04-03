@@ -62,7 +62,7 @@ void render() {
 int main() {
 	if (!initializeWindow()) return -1;
 
-	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	SDL_SetRenderTarget(renderer, NULL);
 
 	Game::Sprite playerSprite(SDL_GetRenderer(window), "./assets/player.png", 4, 1);
@@ -71,7 +71,6 @@ int main() {
 
 	Uint32 lastTick = SDL_GetTicks();
 
-	const Uint8* keyboard = SDL_GetKeyboardState(NULL);
 	SDL_Event e;
 	while (e.type != SDL_QUIT) {
 		// Calculate delta time
@@ -79,14 +78,7 @@ int main() {
 		lastTick = SDL_GetTicks64();
 
 		// check for keyboard events
-		while (SDL_PollEvent(&e)) {
-			if (e.type == SDL_QUIT) break;
-
-			if (e.type == SDL_KEYDOWN) {
-				Game::Events::keyboard.publish(e.key.keysym.sym);
-			}
-		}
-
+		Game::Events::processEvents();
 		player->physics(dt);
 		render();
 

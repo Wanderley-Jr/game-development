@@ -5,12 +5,21 @@
 
 #include <my-lib/trigger.h>
 
+#include "Direction.h"
+
 namespace Game {
 namespace Events {
 
-using Keyboard = Mylib::Trigger::EventHandler<SDL_Keycode>;
+struct UpdateDirectionEvent {
+	Direction direction;
+	bool start;
+};
 
-extern Keyboard keyboard;
+using UpdateDirection = Mylib::Trigger::EventHandler<UpdateDirectionEvent>;
+
+inline UpdateDirection playerMove;
+
+void processEvents();
 
 }  // namespace Events
 }  // namespace Game

@@ -29,7 +29,7 @@ Sprite::Sprite(SDL_Renderer* renderer, const char* filename, int x, int y) : ren
 }
 
 Sprite::~Sprite() {
-	printf("Destructor has been called\n");
+	// printf("Destructor has been called\n");
 	// SDL_DestroyTexture(texture);
 }
 
