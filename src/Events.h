@@ -3,7 +3,9 @@
 
 #include <SDL.h>
 
+#include <chrono>
 #include <my-lib/trigger.h>
+#include <my-lib/timer.h>
 
 #include "Direction.h"
 
@@ -16,8 +18,10 @@ struct UpdateDirectionEvent {
 };
 
 using UpdateDirection = Mylib::Trigger::EventHandler<UpdateDirectionEvent>;
+using Attack = Mylib::Trigger::EventHandler<void*>;
 
 inline UpdateDirection playerMove;
+inline Attack playerAttack;
 
 void processEvents();
 

@@ -5,7 +5,7 @@
 #include "GameObject.h"
 #include "Player.h"
 #include "Events.h"
-#include "Sprite.h"
+#include "PlayerSprite.h"
 #include "Map.h"
 
 using namespace std;
@@ -43,7 +43,7 @@ bool initializeWindow() {
 	return true;
 }
 
-void render() {
+void render(const float dt) {
 	SDL_Renderer* renderer = SDL_GetRenderer(window);
 	SDL_RenderClear(renderer);
 
@@ -53,7 +53,7 @@ void render() {
 
 	// render all game objects
 	for (auto& obj : gameObjects) {
-		obj->render(renderer, TILE_SIZE);
+		obj->render(renderer, dt, TILE_SIZE);
 	}
 
 	SDL_RenderPresent(renderer);
@@ -65,11 +65,12 @@ int main() {
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	SDL_SetRenderTarget(renderer, NULL);
 
-	Game::Sprite playerSprite(SDL_GetRenderer(window), "./assets/player.png", 4, 1);
+	Game::Atlas atlas = Game::Atlas(renderer, "./assets/atlas.png");
+	Game::Atlas playerSprite(atlas);
 	Game::Player* player = new Game::Player(playerSprite, 0, 0);
 	gameObjects.push_back(player);
 
-	Uint32 lastTick = SDL_GetTicks();
+	Uint64 lastTick = SDL_GetTicks64();
 
 	SDL_Event e;
 	while (e.type != SDL_QUIT) {
@@ -80,7 +81,7 @@ int main() {
 		// check for keyboard events
 		Game::Events::processEvents();
 		player->physics(dt);
-		render();
+		render(dt);
 
 		SDL_Delay(1000 / 60);
 	}

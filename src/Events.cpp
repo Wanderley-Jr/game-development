@@ -22,20 +22,27 @@ Direction toDirection(const SDL_Keycode key) {
 
 void processEvents() {
 	SDL_Event event;
+
 	while (SDL_PollEvent(&event)) {
+		bool start = false;
 		switch (event.type) {
 		case SDL_KEYDOWN:
-			playerMove.publish(UpdateDirectionEvent{
-			    .direction = toDirection(event.key.keysym.sym),
-			    .start = true,
-			});
+			start = true;
+		case SDL_KEYUP: {
+			Direction direction = toDirection(event.key.keysym.sym);
+			if (direction != Direction::NONE) {
+				playerMove.publish(UpdateDirectionEvent{
+				    .direction = direction,
+				    .start = start,
+				});
+			}
+
+			if (event.key.keysym.sym == SDLK_SPACE) {
+				playerAttack.publish(nullptr);
+			}
+
 			break;
-		case SDL_KEYUP:
-			playerMove.publish(UpdateDirectionEvent{
-			    .direction = toDirection(event.key.keysym.sym),
-			    .start = false,
-			});
-			break;
+		}
 		case SDL_QUIT:
 			exit(0);
 			break;
