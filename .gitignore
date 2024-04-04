@@ -1,0 +1,9 @@
+# Ignore vscode EXCEPT for c_cpp_properties.json
+.vscode/
+!.vscode/c_cpp_properties.json
+
+# Ignore build output
+game
+
+# Ignore ase files
+*.ase
