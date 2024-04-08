@@ -25,8 +25,7 @@ Atlas::Atlas(SDL_Renderer* renderer, const char* filename) : renderer(renderer) 
 }
 
 Atlas::~Atlas() {
-	// printf("Destructor has been called\n");
-	// SDL_DestroyTexture(texture);
+	SDL_DestroyTexture(texture);
 }
 
 void Atlas::render(SDL_Renderer* renderer, SDL_Rect* sprite, int x, int y) const {

@@ -18,9 +18,12 @@ class Object {
 	Vector speed;
 
    public:
+	Vector getPosition() const { return position; }
+	Vector getSpeed() const { return speed; }
+
 	Object(const float x, const float y);
 
-	virtual void render(SDL_Renderer* renderer, const float dt, int tileSize) = 0;
+	virtual void render(SDL_Renderer* renderer, const float dt, const int x, const int y) = 0;
 	virtual void physics(const float dt);
 };
 

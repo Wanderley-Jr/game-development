@@ -6,17 +6,17 @@ namespace Game {
 PlayerSprite::PlayerSprite(const Atlas& atlas) : atlas(atlas), direction(Direction::DOWN), state(State::STANDING) {
 	// Walk animation
 	Animation walk;
-	walk.addFrame({Sprite::PLAYER_STANDING, 0.2});
-	walk.addFrame({Sprite::PLAYER_WALKING_1, 0.2});
-	walk.addFrame({Sprite::PLAYER_STANDING, 0.2});
-	walk.addFrame({Sprite::PLAYER_WALKING_2, 0.2});
+	walk.addFrame({Sprite::PLAYER_STANDING, 0.125});
+	walk.addFrame({Sprite::PLAYER_WALKING_1, 0.125});
+	walk.addFrame({Sprite::PLAYER_STANDING, 0.125});
+	walk.addFrame({Sprite::PLAYER_WALKING_2, 0.125});
 	animations[State::WALKING] = walk;
 
 	// Attack animation
 	Animation attack;
-	attack.addFrame({Sprite::PLAYER_ATTACKING_1, 0.1});
-	attack.addFrame({Sprite::PLAYER_ATTACKING_2, 0.3});
-	attack.addFrame({Sprite::PLAYER_ATTACKING_1, 0.1});
+	attack.addFrame({Sprite::PLAYER_ATTACKING_1, 0.125});
+	attack.addFrame({Sprite::PLAYER_ATTACKING_2, 0.250});
+	// attack.addFrame({Sprite::PLAYER_ATTACKING_1, 0.1});
 	animations[State::ATTACKING] = attack;
 
 	// Standing animation
@@ -28,7 +28,8 @@ PlayerSprite::PlayerSprite(const Atlas& atlas) : atlas(atlas), direction(Directi
 void PlayerSprite::render(SDL_Renderer* renderer, int x, int y) {
 	SDL_Rect sprite = animations[state].getCurrentSprite();
 
-	// Calculate the correct origin of the sprite
+	// Calculate the correct origin of the sprite, because
+	// some sprites are actually larger than an entire tile
 	int shiftX = 0, shiftY = 0;
 
 	switch (state) {
@@ -40,11 +41,6 @@ void PlayerSprite::render(SDL_Renderer* renderer, int x, int y) {
 		shiftX = -8;
 		shiftY = -11;
 		break;
-	}
-
-	if (sprite.w != 16) {
-		shiftX = -8;
-		shiftY = -11;
 	}
 
 	// Adjust the sprite position based on the direction, which works

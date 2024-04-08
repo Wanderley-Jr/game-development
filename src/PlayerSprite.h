@@ -38,8 +38,9 @@ class PlayerSprite {
 	}
 
 	void setState(State state) {
-		this->state = state;
+		if (this->state == state) return;
 		animations[state].reset();
+		this->state = state;
 	}
 
 	PlayerSprite(const Atlas& atlas);
