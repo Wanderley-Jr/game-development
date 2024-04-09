@@ -4,7 +4,6 @@
 #include "GameObject.h"
 #include "Player.h"
 #include "Events.h"
-#include "PlayerSprite.h"
 #include "World.h"
 
 SDL_Window* window = NULL;

@@ -2,11 +2,8 @@
 #define GAME_PLAYER_H
 
 #include <deque>
-
 #include "GameObject.h"
-#include "PlayerSprite.h"
 #include "Animation.h"
-#include "Sprite.h"
 
 namespace Game {
 
@@ -27,8 +24,8 @@ class Player : public Object {
 	int animationIndex;
 	Animation animations[3];
 
-	void updateSpeed();
 	void loadAnimations();
+	void switchAnimation(int animation);
 
    public:
 	Player(const Atlas& atlas, const float x, const float y);

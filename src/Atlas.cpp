@@ -25,9 +25,10 @@ Atlas::~Atlas() {
 	SDL_DestroyTexture(texture);
 }
 
-void Atlas::render(const SDL_Rect* sprite, const int x, const int y) const {
-	SDL_Rect dest = {x, y, sprite->w, sprite->h};
-	SDL_RenderCopy(renderer, texture, sprite, &dest);
+void Atlas::render(const Sprite sprite, const int x, const int y) const {
+	SDL_Rect atlasRegion = {sprite.x, sprite.y, sprite.width, sprite.height};
+	SDL_Rect dest = {x - sprite.originX, y - sprite.originY, sprite.width, sprite.height};
+	SDL_RenderCopy(renderer, texture, &atlasRegion, &dest);
 }
 
 }  // namespace Game

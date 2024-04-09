@@ -4,7 +4,8 @@
 namespace Game {
 namespace Utils {
 
-void toDirectionVector(Vector& direction) {
+// Returns a vector of length 1 representing the direction of the vector
+Vector toDirectionVector(Vector direction) {
 	if (direction.x > 0) {
 		direction.x = 1;
 	} else if (direction.x < 0) {
@@ -20,10 +21,12 @@ void toDirectionVector(Vector& direction) {
 	} else {
 		direction.y = 0;
 	}
+
+	return direction;
 }
 
 // Returns a normalized vector representing a certain direction
-Vector getDirectionVector(Direction direction) {
+Vector toDirectionVector(Direction direction) {
 	switch (direction) {
 	case Direction::UP:
 		return Vector(0, -1);
