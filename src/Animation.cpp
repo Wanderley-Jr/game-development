@@ -11,14 +11,6 @@ void Animation::setAnimation(const int index) {
 }
 
 Sprite Animation::getCurrentSprite() {
-	if (currentFrame != 0) {
-		printf("currentAnimation: %d\n", currentAnimation);
-		printf("currentFrame: %d\n", currentFrame);
-		printf("frameTime: %f\n", frameTime);
-		printf("sprite: %p\n", &animations[currentAnimation][currentFrame].sprite);
-		printf("duration: %f\n", animations[currentAnimation][currentFrame].duration);
-	}
-
 	return animations[currentAnimation][currentFrame].sprite;
 }
 
@@ -34,9 +26,6 @@ void Animation::update(const float dt) {
 			currentFrame = 0;
 		}
 	}
-
-	printf("Current index: %d\n", currentAnimation);
-	printf("Current frame: %d\n", currentFrame);
 }
 
 void Animation::reset() {

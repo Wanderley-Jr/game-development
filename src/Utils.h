@@ -11,6 +11,7 @@ namespace Game {
 
 namespace Utils {
 
+void toDirectionVector(Vector& direction);
 Vector getDirectionVector(Direction direction);
 
 }  // namespace Utils

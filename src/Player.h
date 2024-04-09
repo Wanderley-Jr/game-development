@@ -21,8 +21,7 @@ namespace Game {
 class Player : public Object {
    protected:
 	const Atlas& atlas;
-	Uint8 directions;
-	std::deque<Direction> directionOrder;
+	Direction direction;
 	float attackDuration;
 
 	int animationIndex;

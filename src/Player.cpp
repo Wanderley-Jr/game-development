@@ -38,7 +38,7 @@ void Player::loadAnimations() {
 	}
 }
 
-Player::Player(const Atlas& atlas, const float x, const float y) : Object(x, y), atlas(atlas), animationIndex(0), directions(0), attackDuration(-1) {
+Player::Player(const Atlas& atlas, const float x, const float y) : Object(x, y), atlas(atlas), animationIndex(0), attackDuration(-1) {
 	// Subscribe to events
 	auto callback1 = Mylib::Trigger::make_callback_object<Events::UpdateDirection::Type>(*this, &Player::onDirectionUpdate);
 	Events::playerMove.subscribe(callback1);
@@ -52,7 +52,7 @@ void Player::render(SDL_Renderer* renderer, const float dt, const int x, const i
 	int oldIndex = animationIndex;
 	if (attackDuration != -1) {
 		animationIndex = 2;  // Attacking
-	} else if (directions != 0) {
+	} else if (speed.x != 0 || speed.y != 0) {
 		animationIndex = 1;  // Walking
 	} else {
 		animationIndex = 0;  // Standing
@@ -64,11 +64,9 @@ void Player::render(SDL_Renderer* renderer, const float dt, const int x, const i
 		animation.reset();
 	}
 
-	if (!directionOrder.empty() && (attackDuration == -1 || oldIndex != animationIndex)) {
-		animation.setAnimation((int)directionOrder.back());
+	if (attackDuration == -1) {
+		animation.setAnimation((int)direction);
 	}
-
-	printf("Index: %d\n", animationIndex);
 
 	animation.update(dt);
 	animation.getCurrentSprite().render(atlas, x, y);
@@ -84,44 +82,85 @@ void Player::physics(const float dt) {
 		return;
 	}
 
+	printf("Speed: %f %f\n", speed.x, speed.y);
+
 	Object::physics(dt);
 }
 
 void Player::updateSpeed() {
-	speed.set_zero();
-	for (int i = 0; i < 4; i++) {
-		if (directions & (1 << i)) {
-			speed += Utils::getDirectionVector((Direction)i);
-		}
-	}
-	if (speed.length() != 0) {
-		speed.normalize();
-	}
-	speed *= 3.5f;
+	// speed.set_zero();
+	// for (int i = 0; i < 4; i++) {
+	// 	if (directions & (1 << i)) {
+	// 		speed += Utils::getDirectionVector((Direction)i);
+	// 	}
+	// }
+	// if (speed.length() != 0) {
+	// 	speed.normalize();
+	// }
+	// speed *= 3.5f;
 }
 
 void Player::onDirectionUpdate(const Events::UpdateDirection::Type& event) {
-	// Check if the direction is already in the correct state
-	int dirBit = 1 << (int)event.direction;
-	if ((event.start && (directions & dirBit)) || (!event.start && !(directions & dirBit))) {
-		return;
-	}
+	// Log everything
+	printf("Player::onDirectionUpdate: start=%d, direction=%d\n", event.start, event.direction);
+	printf("Player::onDirectionUpdate: speed=%f %f\n", speed.x, speed.y);
+	printf("Player::onDirectionUpdate: direction=%d\n", direction);
 
-	// Update directions
 	if (event.start) {
-		directions |= dirBit;
-		directionOrder.push_back(event.direction);
+		// If player is already moving in that direction, don't do anything
+		if ((event.direction == Direction::DOWN && speed.y > 0) ||
+		    (event.direction == Direction::UP && speed.y < 0) ||
+		    (event.direction == Direction::LEFT && speed.x < 0) ||
+		    (event.direction == Direction::RIGHT && speed.x > 0)) {
+			return;
+		}
+
+		// Calculate new speed
+		Vector currentSpeed = speed;
+		Vector newSpeed = Utils::getDirectionVector(event.direction);
+		Utils::toDirectionVector(currentSpeed);
+		speed = currentSpeed + newSpeed;
+
+		// Normalize the speed vector to make movement equal on all directions
+		if (speed.x != 0 || speed.y != 0) {
+			speed.normalize();
+			speed *= 3.5f;
+		}
+
+		// Update direction
+		direction = event.direction;
 	} else {
-		directions &= ~dirBit;
-		directionOrder.erase(std::remove(directionOrder.begin(), directionOrder.end(), event.direction), directionOrder.end());
+		// When player stops moving in a direction, reset his speed (only on that axis)
+		if (event.direction == Direction::UP || event.direction == Direction::DOWN) {
+			speed.y = 0;
+		} else {
+			speed.x = 0;
+		}
+
+		// If only one direction is active, adjust the speed to maintain the total speed
+		if ((speed.x != 0 && speed.y == 0) || (speed.x == 0 && speed.y != 0)) {
+			speed.normalize();
+			speed *= 3.5f;
+		}
+
+		// Set the direction to his previous direction, which must be
+		// the direction he is moving to, according to his speed.
+		if (speed.x != 0) {
+			direction = speed.x > 0 ? Direction::RIGHT : Direction::LEFT;
+		} else if (speed.y != 0) {
+			direction = speed.y > 0 ? Direction::DOWN : Direction::UP;
+		}
 	}
 
-	updateSpeed();
+	printf("After\nPlayer::onDirectionUpdate: start=%d, direction=%d\n", event.start, event.direction);
+	printf("Player::onDirectionUpdate: speed=%f %f\n", speed.x, speed.y);
+	printf("Player::onDirectionUpdate: direction=%d\n", direction);
 }
 
 void Player::onAttack(const Events::Attack::Type& event) {
 	if (attackDuration != -1) return;
 	attackDuration = 0;
+	animations[2].setAnimation((int)direction);
 }
 
 }  // namespace Game
