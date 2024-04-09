@@ -3,8 +3,6 @@
 namespace Game {
 namespace Events {
 
-// Keyboard keyboard;
-
 Direction toDirection(const SDL_Keycode key) {
 	// WASD
 	switch (key) {

@@ -2,28 +2,33 @@
 #define ANIMATION_H
 
 #include <vector>
+
 #include <SDL.h>
 
-#include "Atlas.h"
+#include "Sprite.h"
 
 namespace Game {
 
 struct AnimationFrame {
-	SDL_Rect sprite;
+	Sprite sprite;
 	float duration;  // in seconds
 };
 
 class Animation {
    protected:
-	std::vector<AnimationFrame> frames;
+	std::vector<std::vector<AnimationFrame>> animations;
+	int currentAnimation;
 	int currentFrame;
 	float frameTime;
 
    public:
-	Animation();
-	void addFrame(AnimationFrame frame);
-	SDL_Rect getCurrentSprite();
-	void update(float dt);
+	Animation() : currentAnimation(0), currentFrame(0), frameTime(0){};
+
+	void addAnimation(const std::vector<AnimationFrame>& animation);
+
+	Sprite getCurrentSprite();
+	void setAnimation(const int index);
+	void update(const float dt);
 	void reset();
 };
 

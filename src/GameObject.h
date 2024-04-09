@@ -3,8 +3,6 @@
 
 #include <my-lib/math-vector.h>
 
-using Vector = Mylib::Math::Vector<float, 2>;
-
 #include "Events.h"
 #include "Direction.h"
 

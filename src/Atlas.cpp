@@ -1,14 +1,11 @@
+#include <stdexcept>
+
 #include <SDL.h>
 #include <SDL_image.h>
-
-#include <stdexcept>
 
 #include "Atlas.h"
 
 namespace Game {
-
-#include <stdio.h>
-#include <SDL_surface.h>
 
 Atlas::Atlas(SDL_Renderer* renderer, const char* filename) : renderer(renderer) {
 	SDL_Surface* surface = IMG_Load(filename);
@@ -28,7 +25,7 @@ Atlas::~Atlas() {
 	SDL_DestroyTexture(texture);
 }
 
-void Atlas::render(SDL_Renderer* renderer, SDL_Rect* sprite, int x, int y) const {
+void Atlas::render(const SDL_Rect* sprite, const int x, const int y) const {
 	SDL_Rect dest = {x, y, sprite->w, sprite->h};
 	SDL_RenderCopy(renderer, texture, sprite, &dest);
 }

@@ -3,9 +3,7 @@
 
 #include <SDL.h>
 
-#include <chrono>
 #include <my-lib/trigger.h>
-#include <my-lib/timer.h>
 
 #include "Direction.h"
 

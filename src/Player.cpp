@@ -5,32 +5,73 @@
 
 namespace Game {
 
-Player::Player(const Atlas& atlas, float x, const float y) : Object(x, y), sprite(PlayerSprite(atlas)), directions(0), attackDuration(-1) {
-	// Subscribe to keyboard events
+void Player::loadAnimations() {
+	SDL_Rect PLAYER_STANDING({.x = 0, .y = 0, .w = 16, .h = 24});
+	SDL_Rect PLAYER_WALKING_1({.x = 0, .y = 24, .w = 16, .h = 24});
+	SDL_Rect PLAYER_WALKING_2({.x = 0, .y = 48, .w = 16, .h = 24});
+	SDL_Rect PLAYER_ATTACKING_1({.x = 0, .y = 72, .w = 32, .h = 32});
+	SDL_Rect PLAYER_ATTACKING_2({.x = 0, .y = 104, .w = 32, .h = 32});
+
+	// Add an animation for each direction
+	for (int i = 0; i < 4; i++) {
+		animations[0].addAnimation({
+		    {{PLAYER_STANDING, 0, 8}, -1},
+		});
+
+		animations[1].addAnimation({
+		    {{PLAYER_STANDING, 0, 8}, 0.125f},
+		    {{PLAYER_WALKING_1, 0, 8}, 0.125f},
+		    {{PLAYER_STANDING, 0, 8}, 0.125f},
+		    {{PLAYER_WALKING_2, 0, 8}, 0.125f},
+		});
+
+		animations[2].addAnimation({
+		    {{PLAYER_ATTACKING_1, 8, 11}, 0.125f},
+		    {{PLAYER_ATTACKING_2, 8, 11}, 0.500f},
+		});
+
+		PLAYER_STANDING.x += PLAYER_STANDING.w;
+		PLAYER_WALKING_1.x += PLAYER_WALKING_1.w;
+		PLAYER_WALKING_2.x += PLAYER_WALKING_2.w;
+		PLAYER_ATTACKING_1.x += PLAYER_ATTACKING_1.w;
+		PLAYER_ATTACKING_2.x += PLAYER_ATTACKING_2.w;
+	}
+}
+
+Player::Player(const Atlas& atlas, const float x, const float y) : Object(x, y), atlas(atlas), animationIndex(0), directions(0), attackDuration(-1) {
+	// Subscribe to events
 	auto callback1 = Mylib::Trigger::make_callback_object<Events::UpdateDirection::Type>(*this, &Player::onDirectionUpdate);
 	Events::playerMove.subscribe(callback1);
-
-	// Subscribe to attack events
 	auto callback2 = Mylib::Trigger::make_callback_object<Events::Attack::Type>(*this, &Player::onAttack);
 	Events::playerAttack.subscribe(callback2);
+
+	loadAnimations();
 }
 
 void Player::render(SDL_Renderer* renderer, const float dt, const int x, const int y) {
-	if (!directionOrder.empty() && attackDuration == -1) {
-		sprite.setDirection(directionOrder.back());
-	}
-
+	int oldIndex = animationIndex;
 	if (attackDuration != -1) {
-		sprite.setState(PlayerSprite::ATTACKING);
+		animationIndex = 2;  // Attacking
 	} else if (directions != 0) {
-		sprite.setState(PlayerSprite::WALKING);
+		animationIndex = 1;  // Walking
 	} else {
-		sprite.setState(PlayerSprite::STANDING);
+		animationIndex = 0;  // Standing
 	}
 
-	sprite.update(dt);
+	Animation& animation = animations[animationIndex];
 
-	sprite.render(renderer, x, y);
+	if (animationIndex != oldIndex) {
+		animation.reset();
+	}
+
+	if (!directionOrder.empty() && (attackDuration == -1 || oldIndex != animationIndex)) {
+		animation.setAnimation((int)directionOrder.back());
+	}
+
+	printf("Index: %d\n", animationIndex);
+
+	animation.update(dt);
+	animation.getCurrentSprite().render(atlas, x, y);
 }
 
 void Player::physics(const float dt) {

@@ -1,12 +1,13 @@
+#ifndef PLAYER_SPRITE_H
+#define PLAYER_SPRITE_H
+
 #include <vector>
+
 #include <SDL.h>
 
 #include "Atlas.h"
 #include "Direction.h"
 #include "Animation.h"
-
-#ifndef PLAYER_SPRITE_H
-#define PLAYER_SPRITE_H
 
 namespace Game {
 

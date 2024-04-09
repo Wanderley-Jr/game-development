@@ -1,8 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "Direction.h"
 #include <my-lib/math-vector.h>
+
+#include "Direction.h"
 
 using Vector = Mylib::Math::Vector<float, 2>;
 

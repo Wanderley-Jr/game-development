@@ -1,9 +1,10 @@
-#ifndef GAME_MAP_H
-#define GAME_MAP_H
+#ifndef WORLD_H
+#define WORLD_H
 
 #include <vector>
 
 #include <SDL.h>
+
 #include <my-lib/matrix.h>
 
 #include "GameObject.h"
@@ -22,8 +23,8 @@ class World {
 	const Atlas& atlas;
 	Mylib::Matrix<Tile> map;
 	std::vector<Object*> objects;
-	int width;
-	int height;
+	int width;   // float
+	int height;  // float
 
    public:
 	int getWidth() const {
