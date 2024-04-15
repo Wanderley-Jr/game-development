@@ -1,5 +1,5 @@
 #include "World.h"
-#include "Player.h"
+#include "entities/Player.h"
 
 namespace Game {
 
@@ -12,11 +12,11 @@ void initializeMap(Mylib::Matrix<Tile>& map, const std::string& mapStr) {
 		for (int x = 0; x < width; x++) {
 			Tile tile;
 			switch (mapStr[y * width + x]) {
-			case '.':
+			case ' ':
 				tile = Tile::GRASS;
 				break;
 			case 'w':
-				tile = Tile::WATER;
+				tile = Tile::WALL;
 				break;
 			default:
 				tile = Tile::GRASS;
@@ -41,7 +41,7 @@ void renderMap(SDL_Renderer* renderer, const Mylib::Matrix<Tile>& map) {
 			case Tile::GRASS:
 				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 				break;
-			case Tile::WATER:
+			case Tile::WALL:
 				SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
 				break;
 			}
@@ -58,21 +58,50 @@ World::World(const Atlas& atlas) : atlas(atlas) {
 
 	initializeMap(
 	    map,
-	    "..........."
-	    "..........."
-	    "....www...."
-	    "....www...."
-	    "....www...."
-	    "..........."
-	    "...........");
+	    "           "
+	    "           "
+	    "    www    "
+	    "    www    "
+	    "    www    "
+	    "           "
+	    "           ");
 
-	objects.push_back(new Player(atlas, 0, 0));
+	objects.push_back(new Player(atlas, 1, 1));
+}
+
+void World::processTileCollisions() {
+	for (auto& object : objects) {
+		Vector position = object->getPosition();
+		Vector closest = position;
+		closest.x = round(closest.x);
+		closest.y = round(closest.y);
+		int x = (int)closest.x;
+		int y = (int)closest.y;
+
+		if (x <= 0 || x >= width || y <= 0 || y >= height) {
+			continue;
+		}
+
+		if (position.x < closest.x && x > 0 && map(x - 1, y) == Tile::WALL) {
+			object->setPosition(Vector(closest.x, position.y));
+		} else if (position.x > closest.x && x < width - 1 && map(x + 1, y) == Tile::WALL) {
+			object->setPosition(Vector(closest.x, position.y));
+		}
+
+		if (position.y < closest.y && y > 0 && map(x, y - 1) == Tile::WALL) {
+			object->setPosition(Vector(position.x, closest.y));
+		} else if (position.y > closest.y && y < height - 1 && map(x, y + 1) == Tile::WALL) {
+			object->setPosition(Vector(position.x, closest.y));
+		}
+	}
 }
 
 void World::processPhysics(const float dt) {
 	for (auto& object : objects) {
 		object->physics(dt);
 	}
+
+	processTileCollisions();
 }
 
 void World::render(SDL_Renderer* renderer, const float dt) {

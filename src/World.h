@@ -7,15 +7,15 @@
 
 #include <my-lib/matrix.h>
 
-#include "GameObject.h"
-#include "Atlas.h"
-#include "Player.h"
+#include "entities/GameObject.h"
+#include "graphics/Atlas.h"
+#include "entities/Player.h"
 
 namespace Game {
 
 enum class Tile {
 	GRASS,
-	WATER
+	WALL
 };
 
 class World {
@@ -38,6 +38,8 @@ class World {
 	World(const Atlas& atlas);
 
 	void processPhysics(const float dt);
+	void processTileCollisions();
+
 	void render(SDL_Renderer* renderer, const float dt);
 };
 

@@ -1,8 +1,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include "GameObject.h"
-#include "Player.h"
+#include "entities/GameObject.h"
+#include "entities/Player.h"
 #include "Events.h"
 #include "World.h"
 
