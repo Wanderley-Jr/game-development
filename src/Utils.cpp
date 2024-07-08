@@ -4,6 +4,23 @@
 namespace Game {
 namespace Utils {
 
+// Returns the direction of a vector
+Direction toDirection(Vector vector) {
+	if (abs(vector.x) > abs(vector.y)) {
+		if (vector.x > 0) {
+			return Direction::RIGHT;
+		} else {
+			return Direction::LEFT;
+		}
+	} else {
+		if (vector.y > 0) {
+			return Direction::DOWN;
+		} else {
+			return Direction::UP;
+		}
+	}
+}
+
 // Returns a vector of length 1 representing the direction of the vector
 Vector toDirectionVector(Vector direction) {
 	if (direction.x > 0) {

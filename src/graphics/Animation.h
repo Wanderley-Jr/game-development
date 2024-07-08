@@ -14,20 +14,34 @@ struct AnimationFrame {
 	float duration;  // in seconds
 };
 
+// This class is responsible for managing all the animations of a sprite.
 class Animation {
    protected:
 	std::vector<std::vector<AnimationFrame>> animations;
-	int currentAnimation;
-	int currentFrame;
-	float frameTime;
+	int currentAnimation = 0;
+	int currentFrame = 0;
+	float frameTime = 0;
+	int direction = 0;
 
    public:
-	Animation() : currentAnimation(0), currentFrame(0), frameTime(0){};
-
 	void addAnimation(const std::vector<AnimationFrame>& animation);
 
+	// This is a helper function to add an entire animation based on the position of the first sprite.
+	// This assumes that the sprites are laid horizontally, such that a row contains all the sprites for a single animation
+	void addAnimation(const Sprite first, const std::vector<float> frameTimes);
+
 	Sprite getCurrentSprite();
-	void setAnimation(const int index);
+
+	void setAnimation(const int index) {
+		if (index == currentAnimation) return;
+		currentAnimation = index;
+		reset();
+	}
+
+	void setDirection(const int direction) {
+		this->direction = direction;
+	}
+
 	void update(const float dt);
 	void reset();
 };

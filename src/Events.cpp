@@ -38,6 +38,10 @@ void processEvents() {
 				playerAttack.publish(nullptr);
 			}
 
+			if (event.key.keysym.sym == SDLK_LSHIFT) {
+				playerDash.publish(nullptr);
+			}
+
 			break;
 		}
 		case SDL_QUIT:

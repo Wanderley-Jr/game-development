@@ -1,6 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <SDL.h>
 #include <my-lib/math-vector.h>
 
 #include "Direction.h"
@@ -11,6 +12,7 @@ namespace Game {
 
 namespace Utils {
 
+Direction toDirection(Vector vector);
 Vector toDirectionVector(Vector direction);
 Vector toDirectionVector(Direction direction);
 

@@ -2,37 +2,42 @@
 #define WORLD_H
 
 #include <vector>
-
 #include <SDL.h>
-
 #include <my-lib/matrix.h>
 
-#include "entities/GameObject.h"
 #include "graphics/Atlas.h"
+#include "entities/GameObject.h"
 #include "entities/Player.h"
+#include "entities/Tile.h"
 
 namespace Game {
 
-enum class Tile {
-	GRASS,
-	WALL
-};
+class Player;
 
 class World {
    protected:
 	const Atlas& atlas;
-	Mylib::Matrix<Tile> map;
+	Mylib::Matrix<Tile*> map;
 	std::vector<Object*> objects;
-	int width;   // float
-	int height;  // float
+	Player* player;
+	float width;
+	float height;
 
    public:
-	int getWidth() const {
+	float getWidth() const {
 		return width;
 	}
 
-	int getHeight() const {
+	float getHeight() const {
 		return height;
+	}
+
+	const std::vector<Object*>& getObjects() const {
+		return objects;
+	}
+
+	const Player* getPlayer() const {
+		return player;
 	}
 
 	World(const Atlas& atlas);

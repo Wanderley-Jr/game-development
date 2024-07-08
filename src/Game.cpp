@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 
 #include "entities/GameObject.h"
 #include "entities/Player.h"
@@ -22,6 +23,11 @@ bool initializeWindow() {
 	}
 	printf("SDL_image has been initialized\n");
 
+	if (TTF_Init() == -1) {
+		printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+		return false;
+	}
+
 	window = SDL_CreateWindow(
 	    "Game Test",
 	    SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -42,8 +48,8 @@ int main() {
 	// Scale game screen up!!!
 	int tileSize = 16;
 	int scale = 2;
-	int windowWidth = world.getWidth() * tileSize * scale;
-	int windowHeight = world.getHeight() * tileSize * scale;
+	int windowWidth = 12 * tileSize * scale;
+	int windowHeight = 12 * tileSize * scale;
 	SDL_SetWindowSize(window, windowWidth, windowHeight);
 	SDL_RenderSetScale(renderer, scale, scale);
 

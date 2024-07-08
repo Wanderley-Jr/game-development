@@ -16,10 +16,13 @@ struct UpdateDirectionEvent {
 };
 
 using UpdateDirection = Mylib::Trigger::EventHandler<UpdateDirectionEvent>;
-using Attack = Mylib::Trigger::EventHandler<void*>;
-
 inline UpdateDirection playerMove;
+
+using Attack = Mylib::Trigger::EventHandler<void*>;
 inline Attack playerAttack;
+
+using Dash = Mylib::Trigger::EventHandler<void*>;
+inline Dash playerDash;
 
 void processEvents();
 

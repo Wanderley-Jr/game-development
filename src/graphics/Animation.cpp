@@ -6,12 +6,22 @@ void Animation::addAnimation(const std::vector<AnimationFrame>& animation) {
 	animations.push_back(animation);
 }
 
-void Animation::setAnimation(const int index) {
-	currentAnimation = index;
+void Animation::addAnimation(const Sprite first, const std::vector<float> frameTimes) {
+	std::vector<AnimationFrame> animation;
+	for (int j = 0; j < frameTimes.size(); j++) {
+		AnimationFrame frame;
+		frame.sprite = first;
+		frame.sprite.x += first.width * j;
+		frame.duration = frameTimes[j];
+		animation.push_back(frame);
+	}
+	animations.push_back(animation);
 }
 
 Sprite Animation::getCurrentSprite() {
-	return animations[currentAnimation][currentFrame].sprite;
+	Sprite sprite = animations[currentAnimation][currentFrame].sprite;
+	sprite.y += sprite.height * direction;
+	return sprite;
 }
 
 void Animation::update(const float dt) {

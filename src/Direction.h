@@ -9,9 +9,9 @@ namespace Game {
 
 enum class Direction {
 	DOWN,
-	UP,
 	LEFT,
 	RIGHT,
+	UP,
 	NONE
 };
 

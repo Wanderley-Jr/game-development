@@ -5,27 +5,38 @@
 
 #include "Events.h"
 #include "Direction.h"
+#include "Collider.h"
+#include "Utils.h"
+#include "graphics/Atlas.h"
 
-using Vector = Mylib::Math::Vector<float, 2>;
+using std::string;
 
 namespace Game {
 
 class Object {
    protected:
+	const string name;
 	Vector position;
 	Vector speed;
+	std::vector<Collider> colliders;
 
    public:
+	const string& getName() const { return name; }
+
 	Vector getPosition() const { return position; }
 	void setPosition(const Vector& position) { this->position = position; }
 
 	Vector getSpeed() const { return speed; }
 	void setSpeed(const Vector& speed) { this->speed = speed; }
 
-	Object(const float x, const float y);
+	std::vector<Collider> getColliders() const { return colliders; }
 
-	virtual void render(SDL_Renderer* renderer, const float dt, const int x, const int y) = 0;
-	virtual void physics(const float dt);
+	Object(const string name) : name(std::move(name)),
+	                            position(Vector::zero()),
+	                            speed(Vector::zero()){};
+
+	virtual void render(const Atlas& atlas, const float dt, const int x, const int y) {}
+	virtual void update(const float dt);
 };
 
 }  // namespace Game
