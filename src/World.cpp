@@ -96,6 +96,9 @@ void World::processTileCollisions() {
 	}
 }
 
+void World::processEntityCollisions(const float dt) {
+}
+
 void World::processPhysics(const float dt) {
 	for (auto& object : objects) {
 		object->physics(dt);

@@ -39,6 +39,7 @@ class World {
 
 	void processPhysics(const float dt);
 	void processTileCollisions();
+	void processEntityCollisions();
 
 	void render(SDL_Renderer* renderer, const float dt);
 };
