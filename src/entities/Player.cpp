@@ -7,6 +7,8 @@
 namespace Game {
 
 Player::Player(const Atlas& atlas, const World* world) : Character("player", world), atlas(atlas), attackDuration(-1) {
+	this->health = 100;
+
 	// Subscribe to events
 	auto callback1 = Mylib::Trigger::make_callback_object<Events::UpdateDirection::Type>(*this, &Player::onDirectionUpdate);
 	Events::playerMove.subscribe(callback1);
@@ -15,9 +17,30 @@ Player::Player(const Atlas& atlas, const World* world) : Character("player", wor
 	auto callback3 = Mylib::Trigger::make_callback_object<Events::Dash::Type>(*this, &Player::onDash);
 	Events::playerDash.subscribe(callback3);
 
-	// Create collision box
+	// Create hitboxes
 	colliders.push_back(Collider("player_hitbox", *this, Vector::zero(), Vector(1, 1), false, true, [](Collider& other) {
 		if (other.getOwner().getName() == "player") return;
+	}));
+
+	colliders.push_back(Collider("player_sword", *this, Vector::zero(), Vector::zero(), true, false, [this, world](Collider& other) {
+		auto enemy = dynamic_cast<Enemy*>(&other.getOwner());
+
+		if (other.getName() != "enemy_hitbox" || enemy == nullptr || enemy->getInvincibleDuration() > 0) return;
+
+		enemy->setHealth(std::max(enemy->getHealth() - 20, 0));
+		enemy->setInvincibleDuration(0.5f);
+
+		enemy->setSpeed(Utils::toDirectionVector(direction) * 5.0f);
+		enemy->setForcedMovementDuration(0.25f);
+
+		Mix_PlayChannel(4, this->swordHitSound, 0);
+
+		if (enemy->getHealth() == 0) {
+			// Kill enemy
+			// auto& objs = world->getObjects();
+			// objs.erase(std::remove(objs.begin(), objs.end(), enemy), objs.end());
+			this->score++;
+		}
 	}));
 
 	// Set up animations
@@ -29,6 +52,11 @@ Player::Player(const Atlas& atlas, const World* world) : Character("player", wor
 	                        {Sprites::PLAYER_STANDING, 0.15f}});
 
 	animation.addAnimation(Sprites::PLAYER_ATTACKING, {0.2f, 0.4f});
+
+	// Set up sounds
+	this->swordSwingSound = Mix_LoadWAV("./assets/sword_swing.wav");
+	this->swordHitSound = Mix_LoadWAV("./assets/sword_hit.wav");
+	this->dashSound = Mix_LoadWAV("./assets/dash.wav");
 }
 
 void Player::render(const Atlas& atlas, const float dt, const int x, const int y) {
@@ -56,7 +84,7 @@ void Player::render(const Atlas& atlas, const float dt, const int x, const int y
 		color.a = 63;
 	}
 
-	atlas.render("Hero", x, y);
+	// atlas.render("Hero", x, y);
 	atlas.render(animation.getCurrentSprite(), x, y, color);
 }
 
@@ -66,10 +94,7 @@ void Player::update(const float dt) {
 		attackDuration += dt;
 		if (attackDuration >= 0.375f) {
 			attackDuration = -1;
-
-			if (colliders.size() > 1) {
-				colliders.pop_back();
-			}
+			colliders[1].setActive(false);
 		}
 		return;
 	}
@@ -125,9 +150,13 @@ void Player::onDirectionUpdate(const Events::UpdateDirection::Type& event) {
 
 void Player::onAttack(const Events::Attack::Type& event) {
 	if (attackDuration != -1 || forcedMovementDuration > 0) return;
+
+	// Play sound effect
+	Mix_PlayChannel(4, swordSwingSound, 0);
+
 	attackDuration = 0;
 
-	float x, y, w, h;  // The dimensions of the collider
+	float x = 0, y = 0, w, h;  // The dimensions of the collider
 
 	switch (direction) {
 	case Direction::LEFT:
@@ -146,22 +175,17 @@ void Player::onAttack(const Events::Attack::Type& event) {
 		break;
 	}
 
-	colliders.push_back(Collider("player_sword", *this, Vector(x, y), Vector(w, h), true, false, [this](Collider& other) {
-		auto enemy = dynamic_cast<Enemy*>(&other.getOwner());
-
-		if (other.getName() != "enemy_hitbox" || enemy == nullptr || enemy->getInvincibleDuration() > 0) return;
-
-		// Knock enemy back
-		enemy->setSpeed(Utils::toDirectionVector(direction) * 5.0f);
-		enemy->setForcedMovementDuration(0.25f);
-		enemy->setInvincibleDuration(0.5f);
-	}));
+	// Enable sword collider
+	colliders[1].setPosition(Vector(x, y));
+	colliders[1].setSize(Vector(w, h));
+	colliders[1].setActive(true);
 }
 
 void Player::onDash(const Events::Dash::Type& event) {
 	if (forcedMovementDuration > 0) return;
 	setSpeed(Utils::toDirectionVector(direction) * 15.0f);
 	setForcedMovementDuration(0.25f);
+	Mix_PlayChannel(3, dashSound, 0);
 }
 
 }  // namespace Game

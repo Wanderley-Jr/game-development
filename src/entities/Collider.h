@@ -13,18 +13,27 @@ class Collider {
    protected:
 	std::string name;
 	Object& owner;
-	Vector position;
-	Vector size;
 	bool fixed;
 	bool push;
 	std::function<void(Collider&)> callback;
 
+	bool active = true;
+	Vector position = Vector::zero();
+	Vector size;
+
    public:
 	const std::string& getName() const { return name; }
-	const Vector& getPosition() const { return position; }
-	const Vector& getSize() const { return size; }
 	const bool isFixed() const { return fixed; }
 	const bool isPush() const { return push; }
+
+	const Vector& getPosition() const { return position; }
+	void setPosition(const Vector& position) { this->position = position; }
+
+	const Vector& getSize() const { return size; }
+	void setSize(const Vector& size) { this->size = size; }
+
+	const bool isActive() const { return active; }
+	void setActive(const bool active) { this->active = active; }
 
 	Object& getOwner() const { return owner; }
 

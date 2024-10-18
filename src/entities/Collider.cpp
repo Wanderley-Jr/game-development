@@ -5,6 +5,8 @@
 namespace Game {
 
 bool Collider::checkCollision(const Collider& collider1, const Collider& collider2) {
+	if (!collider1.active || !collider2.active) return false;
+
 	Vector thisPos = collider1.getOwner().getPosition() + collider1.getPosition();
 	Vector otherPos = collider2.getOwner().getPosition() + collider2.getPosition();
 

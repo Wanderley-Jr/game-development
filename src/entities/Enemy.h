@@ -11,7 +11,10 @@ class Enemy : public Character {
 	int aiStatus = 0;
 	float aiDelay = 0;
 	Animation animation;
-	
+
+	Mix_Chunk* attackSound;
+	Mix_Chunk* hurtSound;
+
    public:
 	Enemy(const string name, const World* world);
 

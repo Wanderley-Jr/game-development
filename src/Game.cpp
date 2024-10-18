@@ -1,6 +1,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
+#include <my-lib/trigger.h>
 
 #include "entities/GameObject.h"
 #include "entities/Player.h"
@@ -25,6 +27,11 @@ bool initializeWindow() {
 
 	if (TTF_Init() == -1) {
 		printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+		return false;
+	}
+
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+		printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
 		return false;
 	}
 
@@ -55,6 +62,12 @@ int main() {
 
 	// Main loop
 	Uint64 lastTick = SDL_GetTicks64();
+
+	auto music = Mix_LoadWAV("./assets/music.mp3");
+	auto gameOverSound = Mix_LoadWAV("./assets/game_over.wav");
+	Mix_Volume(0, 40);
+	Mix_PlayChannel(0, music, -1);
+
 	while (isAlive) {
 		Uint64 elapsed = SDL_GetTicks64() - lastTick;
 		lastTick = SDL_GetTicks64();
@@ -64,6 +77,30 @@ int main() {
 		world.processPhysics(dt);
 		world.render(renderer, dt);
 
-		SDL_Delay(1000 / 60);
+		// Game over
+		if (world.getPlayer()->getHealth() <= 0) {
+			Mix_HaltChannel(-1);
+			Mix_PlayChannel(0, gameOverSound, 0);
+
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+			SDL_RenderClear(renderer);
+
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+			atlas.crender("Fim de jogo", windowWidth / 4, windowHeight / 4 - 75);
+			atlas.crender("Aperte espaco para renascer...", windowWidth / 4, windowHeight / 4 + 75);
+
+			SDL_RenderPresent(renderer);
+
+			SDL_Event event;
+			while (event.type != SDL_KEYDOWN || event.key.keysym.sym != SDLK_SPACE) {
+				SDL_PollEvent(&event);
+				SDL_Delay(1000 / 120);
+			}
+
+			Mix_PlayChannel(0, music, -1);
+			world.reset();
+		}
+
+		SDL_Delay(1000 / 120);
 	}
 }

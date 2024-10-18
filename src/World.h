@@ -42,6 +42,10 @@ class World {
 
 	World(const Atlas& atlas);
 
+	void reset();
+
+	void spawnEnemy();
+
 	void processPhysics(const float dt);
 	void processTileCollisions();
 	void processEntityCollisions();

@@ -17,6 +17,7 @@ class Character : public Object {
 	// Used to force the character to move in a direction for a certain amount of time.
 	// When the time is elapsed, the character will stop moving. This is used for knockback and dashing.
 	float forcedMovementDuration = 0;
+	int health = -1;
 
    public:
 	const World* getWorld() { return world; }
@@ -26,6 +27,9 @@ class Character : public Object {
 
 	float getForcedMovementDuration() const { return forcedMovementDuration; }
 	void setForcedMovementDuration(const float forcedMovementDuration) { this->forcedMovementDuration = forcedMovementDuration; }
+
+	int getHealth() const { return health; }
+	void setHealth(const int health) { this->health = health; }
 
 	Character(const string name, const World* world) : Object(std::move(name)), world(world) {}
 

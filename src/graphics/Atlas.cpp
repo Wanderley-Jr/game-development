@@ -19,7 +19,7 @@ Atlas::Atlas(SDL_Renderer* renderer, const char* filename) : renderer(renderer) 
 		throw std::runtime_error("Failed to create texture: " + std::string(SDL_GetError()));
 	}
 
-	font = TTF_OpenFont("./assets/font.ttf", 10);
+	font = TTF_OpenFont("./assets/font.ttf", 12);
 	if (font == nullptr) {
 		throw std::runtime_error("Failed to load font: " + std::string(TTF_GetError()));
 	}
@@ -54,9 +54,22 @@ void Atlas::render(const Sprite sprite, const int x, const int y, const SDL_Colo
 }
 
 void Atlas::render(const std::string text, const int x, const int y) const {
+	int w, h;
+	TTF_SizeText(font, text.c_str(), &w, &h);
+
 	SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255});
 	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_Rect dest = {x, y - surface->h, surface->w, surface->h};
+	SDL_Rect dest = {x, y - h / 2, surface->w, surface->h};
+	SDL_RenderCopy(renderer, textTexture, nullptr, &dest);
+}
+
+void Atlas::crender(const std::string text, const int x, const int y) const {
+	int w, h;
+	TTF_SizeText(font, text.c_str(), &w, &h);
+
+	SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255});
+	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_Rect dest = {x - w / 2, y - h / 2, surface->w, surface->h};
 	SDL_RenderCopy(renderer, textTexture, nullptr, &dest);
 }
 

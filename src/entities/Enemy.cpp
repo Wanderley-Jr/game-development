@@ -8,16 +8,28 @@
 namespace Game {
 
 Enemy::Enemy(const string name, const World* world) : Character(std::move(name), world) {
+	this->health = 100;
+
+	this->attackSound = Mix_LoadWAV("./assets/boar_charge.wav");
+	this->hurtSound = Mix_LoadWAV("./assets/hurt.wav");
+
 	colliders.push_back(Collider("enemy_hitbox", *this, Vector::zero(), Vector(1, 1), false, true, [this](Collider& other) {
 		// Cast owner of other collider to player
 		Player* player = dynamic_cast<Player*>(&other.getOwner());
 		if (other.getName() == "player_hitbox" && player != nullptr && player->getInvincibleDuration() == 0) {
+			player->setHealth(std::max(player->getHealth() - 10, 0));
+			player->setInvincibleDuration(0.5f);
+
 			player->setSpeed(speed);
 			player->setForcedMovementDuration(0.2f);
-			player->setInvincibleDuration(0.5f);
-		}
 
+			Mix_PlayChannel(6, hurtSound, 0);
+		}
 		aiStatus = 0;
+		aiDelay = 0.5f;
+		if (this->getForcedMovementDuration() == 0) {
+			speed.set_zero();
+		}
 	}));
 
 	// Standing animation
@@ -85,6 +97,9 @@ void Enemy::ai(const float dt) {
 			aiStatus = 2;
 			aiDelay = 0.5f;
 			speed.set_zero();
+
+			// Play sound effect
+			Mix_PlayChannel(5, attackSound, 0);
 		} else {
 			speed = direction * 3.0f;
 		}

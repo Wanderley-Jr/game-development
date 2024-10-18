@@ -1,6 +1,8 @@
 #ifndef GAME_PLAYER_H
 #define GAME_PLAYER_H
 
+#include <SDL_mixer.h>
+
 #include "entities/GameObject.h"
 #include "graphics/Animation.h"
 #include "entities/Collider.h"
@@ -14,11 +16,24 @@ class Player : public Character {
    protected:
 	const Atlas& atlas;
 	float attackDuration;
+	int score = 0;
 
 	Animation animation;
 
+	Mix_Chunk* swordSwingSound;
+	Mix_Chunk* swordHitSound;
+	Mix_Chunk* dashSound;
+
    public:
 	Player(const Atlas& atlas, const World* world);
+
+	const int getScore() const {
+		return score;
+	}
+
+	void setScore(const int score) {
+		this->score = score;
+	}
 
 	void onDirectionUpdate(const Events::UpdateDirection::Type& event);
 	void onAttack(const Events::Attack::Type& event);
