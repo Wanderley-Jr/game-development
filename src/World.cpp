@@ -106,6 +106,17 @@ World::World(const Atlas& atlas) : atlas(atlas) {
 	reset();
 }
 
+World::~World() {
+	for (auto& object : objects) {
+		delete object;
+	}
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			delete map(x, y);
+		}
+	}
+}
+
 void World::reset() {
 	objects.clear();
 

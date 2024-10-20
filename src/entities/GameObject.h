@@ -33,7 +33,11 @@ class Object {
 
 	Object(const string name) : name(std::move(name)),
 	                            position(Vector::zero()),
-	                            speed(Vector::zero()){};
+	                            speed(Vector::zero()) {};
+
+	~Object() {
+		printf("%s destructed\n", name.c_str());
+	}
 
 	virtual void render(const Atlas& atlas, const float dt, const int x, const int y) {}
 	virtual void update(const float dt);

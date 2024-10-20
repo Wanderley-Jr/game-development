@@ -42,6 +42,8 @@ class World {
 
 	World(const Atlas& atlas);
 
+	~World();
+
 	void reset();
 
 	void spawnEnemy();

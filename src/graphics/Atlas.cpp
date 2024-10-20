@@ -24,7 +24,6 @@ Atlas::Atlas(SDL_Renderer* renderer, const char* filename) : renderer(renderer) 
 		throw std::runtime_error("Failed to load font: " + std::string(TTF_GetError()));
 	}
 	TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
-
 	SDL_FreeSurface(surface);
 }
 
@@ -61,6 +60,8 @@ void Atlas::render(const std::string text, const int x, const int y) const {
 	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_Rect dest = {x, y - h / 2, surface->w, surface->h};
 	SDL_RenderCopy(renderer, textTexture, nullptr, &dest);
+	SDL_FreeSurface(surface);
+	SDL_DestroyTexture(textTexture);
 }
 
 void Atlas::crender(const std::string text, const int x, const int y) const {
@@ -71,6 +72,8 @@ void Atlas::crender(const std::string text, const int x, const int y) const {
 	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_Rect dest = {x - w / 2, y - h / 2, surface->w, surface->h};
 	SDL_RenderCopy(renderer, textTexture, nullptr, &dest);
+	SDL_FreeSurface(surface);
+	SDL_DestroyTexture(textTexture);
 }
 
 }  // namespace Game

@@ -104,5 +104,7 @@ int main(int argc, char* argv[]) {
 		SDL_Delay(1000 / 120);
 	}
 
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
 	return 0;
 }
