@@ -1,7 +1,7 @@
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include <my-lib/trigger.h>
 
 #include "entities/GameObject.h"
@@ -44,7 +44,7 @@ bool initializeWindow() {
 	return true;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
 	if (!initializeWindow()) return -1;
 
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -103,4 +103,6 @@ int main() {
 
 		SDL_Delay(1000 / 120);
 	}
+
+	return 0;
 }

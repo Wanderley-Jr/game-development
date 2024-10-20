@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include "entities/Player.h"
 #include "entities/Enemy.h"

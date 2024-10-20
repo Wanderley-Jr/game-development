@@ -2,7 +2,7 @@
 #define WORLD_H
 
 #include <vector>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <my-lib/matrix.h>
 
 #include "graphics/Atlas.h"

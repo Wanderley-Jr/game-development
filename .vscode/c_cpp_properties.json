@@ -2,17 +2,12 @@
     "configurations": [
         {
             "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/src/**",
-                "${workspaceFolder}/../my-game-lib/include/**",
-                "${workspaceFolder}/../my-lib/include/**",
-                "/usr/include/SDL2"
-            ],
+            "includePath": ["${workspaceFolder}/src/**", "${workspaceFolder}/../my-lib/include/**"],
             "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": null,
             "cStandard": "c23",
             "cppStandard": "gnu++23",
-            "intelliSenseMode": "linux-gcc-x64"
+            "intelliSenseMode": "windows-gcc-x64"
         }
     ],
     "version": 4

@@ -1,7 +1,7 @@
 #ifndef GAME_PLAYER_H
 #define GAME_PLAYER_H
 
-#include <SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "entities/GameObject.h"
 #include "graphics/Animation.h"

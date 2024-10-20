@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <my-lib/math-vector.h>
 
 #include "Direction.h"

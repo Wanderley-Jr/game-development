@@ -1,5 +1,3 @@
-#include <SDL2/SDL_render.h>
-
 #include "Events.h"
 #include "entities/Character.h"
 #include "entities/Enemy.h"
